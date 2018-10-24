@@ -1,12 +1,5 @@
 import React, { Component } from 'react'
-import {
-  Button,
-  ScrollView,
-  Text,
-  View,
-  AlertIOS,
-  StyleSheet
-} from 'react-native'
+import { Button, Text, View, AlertIOS, StyleSheet } from 'react-native'
 import Expo from 'expo'
 import Phone from 'react-native-phone-call'
 
@@ -17,7 +10,6 @@ export default class App extends Component {
     id: '',
     started: false
   }
-  _getContactList = async () => {}
   _getRandomContactsAsync = async () => {
     let { status } = await Expo.Permissions.askAsync(Expo.Permissions.CONTACTS)
     if (status !== 'granted') {
@@ -32,7 +24,6 @@ export default class App extends Component {
 
     let maxNumberOfContacts = contactData.data.length
 
-    //n = random-number
     let n = Math.floor(Math.random() * maxNumberOfContacts)
     let randomContactData = contactData.data[n]
     this.setState({
@@ -40,26 +31,14 @@ export default class App extends Component {
       name: randomContactData.name,
       id: randomContactData.id
     })
-    // console.log(contactData)
-    // console.log(maxNumberOfContacts)
-    // console.log(randomContactData)
-    // console.log(maxNumberOfContacts)
-    // console.log(this.state.numberOfContacts)
-    // console.log(n)
-    // console.log(n)
-    // console.log(randomContactData)
-    // console.log(randomContactData.phoneNumbers[0].number)
-    // console.log()
-    console.log(randomContactData.name)
 
-    // console.log(this.state.id)
-    // console.log(randomContactData.phoneNumbers[0].number)
+    console.log(randomContactData.name)
   }
-  _deleteContact = async () => {
+
+  _deleteContactAsync = async () => {
     console.log('deleting contact ' + this.state.name)
     let result = await Expo.Contacts.removeContactAsync(this.state.id)
     // Expo.Vibration.vibrate([1000, 2000, 3000])
-
     this._getRandomContactsAsync()
   }
   _callContact = () => {
@@ -73,58 +52,57 @@ export default class App extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.gameTitle}>Call Or Delete</Text>
+      // <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.gameTitle}>Call Or Delete</Text>
+        {this.state.number && (
+          <Text style={styles.randomContactResult}> {this.state.name} </Text>
+        )}
 
-          {this.state.number && (
-            <Text style={styles.randomContactResult}> {this.state.name} </Text>
-          )}
-
-          <View style={styles.bottomRow}>
-            {this.state.started && (
-              <Button
-                style={styles.deleteButton}
-                title="Delete"
-                onPress={() => {
-                  AlertIOS.alert(
-                    'Are you sure',
-                    'Are you sure you want to delete this contact',
-                    [
-                      {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel'
-                      },
-                      {
-                        text: 'Yes',
-                        onPress: () => this._deleteContact()
-                      }
-                    ]
-                  )
-                }}
-              />
-            )}
-
+        <View style={styles.bottomRow}>
+          {this.state.started && (
             <Button
-              style={styles.playButton}
-              title={!this.state.started ? 'Play' : 'Skip'}
+              style={styles.deleteButton}
+              title="Delete"
               onPress={() => {
-                this._getRandomContactsAsync()
+                AlertIOS.alert(
+                  'Are you sure',
+                  'Are you sure you want to delete this contact',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel'
+                    },
+                    {
+                      text: 'Yes',
+                      onPress: () => this._deleteContactAsync()
+                    }
+                  ]
+                )
               }}
             />
-            {this.state.started && (
-              <Button
-                style={styles.callButton}
-                title="Call"
-                onPress={() => {
-                  this._callContact()
-                }}
-              />
-            )}
-          </View>
+          )}
+
+          <Button
+            style={styles.playButton}
+            title={!this.state.started ? 'Play' : 'Skip'}
+            onPress={() => {
+              this._getRandomContactsAsync()
+            }}
+          />
+          {this.state.started && (
+            <Button
+              style={styles.callButton}
+              title="Call"
+              onPress={() => {
+                this._callContact()
+              }}
+            />
+          )}
         </View>
-      </ScrollView>
+      </View>
+      // </ScrollView>
     )
   }
 }
