@@ -37,8 +37,9 @@ export default class App extends Component {
 
   _deleteContactAsync = async () => {
     console.log('deleting contact ' + this.state.name)
+    // Expo.Vibration.vibrate()
     let result = await Expo.Contacts.removeContactAsync(this.state.id)
-    // Expo.Vibration.vibrate([1000, 2000, 3000])
+
     this._getRandomContactsAsync()
   }
   _callContact = () => {
@@ -52,7 +53,6 @@ export default class App extends Component {
 
   render() {
     return (
-      // <ScrollView>
       <View style={styles.container}>
         <Text style={styles.gameTitle}>Call Or Delete</Text>
         {this.state.number && (
@@ -86,7 +86,7 @@ export default class App extends Component {
 
           <Button
             style={styles.playButton}
-            title={!this.state.started ? 'Play' : 'Skip'}
+            title={!this.state.started ? 'Play' : 'DRINK'}
             onPress={() => {
               this._getRandomContactsAsync()
             }}
@@ -102,7 +102,6 @@ export default class App extends Component {
           )}
         </View>
       </View>
-      // </ScrollView>
     )
   }
 }
